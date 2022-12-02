@@ -1,0 +1,11 @@
+# advent_of_code__2022
+- day_01:     part 1 :black_square_button:     | part 2 :black_square_button:
+- day_02:     part 1 :black_square_button:     | part 2 :black_square_button:
+- day_03:     part 1 :black_square_button:     | part 2 :black_square_button:
+- day_04:     part 1 :black_square_button:     | part 2 :black_square_button:
+- day_05:     part 1 :black_square_button:     | part 2 :black_square_button:
+- day_06:     part 1 :black_square_button:     | part 2 :black_square_button:
+- day_07:     part 1 :black_square_button:     | part 2 :black_square_button:
+- day_08:     part 1 :black_square_button:     | part 2 :black_square_button:
+- day_09:     part 1 :black_square_button:     | part 2 :black_square_button:
+- day_10:     part 1 :black_square_button:     | part 2 :black_square_button:
