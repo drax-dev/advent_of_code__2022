@@ -1,5 +1,5 @@
 #include "Utils.h"
-
+#include <sstream>
 #include <fstream>
 
 namespace Utils
@@ -22,5 +22,18 @@ namespace Utils
 			f.read(result.data(), static_cast<long long>(size));
 		}
 		return result;
+	}
+
+	std::vector<std::string> split_string(const std::string& input_string, const char delimiter)
+	{
+		std::vector<std::string> results;
+		std::string temp_string;
+		std::stringstream ss(input_string);
+		while (std::getline(ss, temp_string, delimiter))
+		{
+			temp_string = trim(temp_string);
+			results.emplace_back(temp_string);
+		}
+		return results;
 	}
 }
