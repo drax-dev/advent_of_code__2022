@@ -1,27 +1,9 @@
 ﻿#include <iostream>
-#include <filesystem>
-#include <fstream>
+#include <vector>
 #include <numeric>
 #include <string>
 
-namespace fs = std::filesystem;
-
-std::string trim(std::string string_input)
-{
-	constexpr auto whitespaces = " \t\n\r\f\v";
-	string_input.erase(string_input.find_last_not_of(whitespaces) + 1);
-	string_input.erase(0, string_input.find_first_not_of(whitespaces));
-	return string_input;
-}
-
-std::string read_file(const fs::path& path)
-{
-	std::ifstream f(path, std::ios::in | std::ios::binary);
-	const auto sz = file_size(path);
-	std::string result(sz, '\0');
-	f.read(result.data(), static_cast<long long>(sz));
-	return result;
-}
+#include "Utils.h"
 
 std::vector<int> processFileData(const std::string& data)
 {
@@ -82,7 +64,7 @@ std::vector<int> processFileData(const std::string& data)
 int main()
 {
 	// part 1
-	const auto data = read_file("day01_input.txt");
+	const auto data = Utils::read_file("day01_input.txt");
 	auto results = processFileData(data);
 	std::ranges::sort(results);
 
