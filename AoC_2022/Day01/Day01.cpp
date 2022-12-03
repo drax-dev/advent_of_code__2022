@@ -1,9 +1,7 @@
-﻿// Day01.cpp : Ten plik zawiera funkcję „main”. W nim rozpoczyna się i kończy wykonywanie programu.
-//
-
-#include <iostream>
+﻿#include <iostream>
 #include <filesystem>
 #include <fstream>
+#include <numeric>
 #include <string>
 
 namespace fs = std::filesystem;
@@ -19,7 +17,7 @@ std::string trim(std::string string_input)
 std::string read_file(const fs::path& path)
 {
 	std::ifstream f(path, std::ios::in | std::ios::binary);
-	const auto sz = fs::file_size(path);
+	const auto sz = file_size(path);
 	std::string result(sz, '\0');
 	f.read(result.data(), static_cast<long long>(sz));
 	return result;
@@ -88,5 +86,9 @@ int main()
 	auto results = processFileData(data);
 	std::ranges::sort(results);
 
-	std::cout << "Max calories sum is: " << results.back();
+	std::cout << "Max calories sum is: " << results.back() << "\n";
+
+	// part 2
+	const auto resultSize = std::accumulate(results.end() - 3, results.end(), 0);
+	std::cout << "Top three calories sum is: " << resultSize << std::endl;
 }
