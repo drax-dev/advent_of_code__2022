@@ -18,6 +18,16 @@ struct Range
 		}
 		return false;
 	}
+
+	[[nodiscard]] bool overlap(const Range& other) const
+	{
+		if (begin > other.end || end < other.begin)
+		{
+			return false;
+		}
+
+		return true;
+	}
 };
 
 Range processRange(const std::string& pairData)
@@ -70,7 +80,7 @@ std::vector<std::pair<Range, Range>> processFileData(const std::string& data)
 	return results;
 }
 
-unsigned long long int calculatePairs(const std::vector<std::pair<Range, Range>>& pairs)
+unsigned long long int calculatePairsFullyContains(const std::vector<std::pair<Range, Range>>& pairs)
 {
 	unsigned long long int counter{};
 	for (const auto & [first, second] : pairs)
@@ -83,18 +93,36 @@ unsigned long long int calculatePairs(const std::vector<std::pair<Range, Range>>
 	return counter;
 }
 
+unsigned long long int calculatePairsOverlap(const std::vector<std::pair<Range, Range>>& pairs)
+{
+	unsigned long long int counter{};
+	for (const auto & [first, second] : pairs)
+	{
+		if (first.overlap(second) || second.overlap(first))
+		{
+			counter++;
+		}
+	}
+	return counter;
+}
+
 int main()
 {
 	// part 1
 	const auto data = Utils::read_file("day04_input.txt");
+	std::vector<std::pair<Range, Range>> results;
 	try
 	{
-		const auto results = processFileData(data);
-		const auto pairsNum = calculatePairs(results);
-		std::cout << "Result is: " << pairsNum << "\n";
+		results = processFileData(data);
+		const auto pairsNum = calculatePairsFullyContains(results);
+		std::cout << "Number of pairs fully contains is: " << pairsNum << "\n";
 	}
 	catch (const std::runtime_error& err)
 	{
 		std::cout << err.what() << "\n";
 	}
+
+	// part 2
+	const auto pairsNum = calculatePairsOverlap(results);
+	std::cout << "Number of pairs overlap is: " << pairsNum << "\n";
 }
