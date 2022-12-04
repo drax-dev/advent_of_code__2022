@@ -73,7 +73,7 @@ unsigned long long int processFileDataPart2(const std::vector<std::string>& spli
 		}
 
 		const auto ch= output2.front();
-		std::cout << "badge item type: " << ch << "\n";
+		//std::cout << "badge item type: " << ch << "\n";
 		const unsigned int priority = calculatePriority(ch);
 		sum += priority;
 	}
