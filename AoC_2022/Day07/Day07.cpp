@@ -79,7 +79,7 @@ struct Filesystem
 	}
 };
 
-std::vector<unsigned long long int> traverseAndCollectSizes(const std::shared_ptr<Dir>& dirPtr)
+std::vector<unsigned long long int> traverseAndCollectSizesPart1(const std::shared_ptr<Dir>& dirPtr)
 {
 	std::vector<unsigned long long int> results;
 	for (const auto& child : dirPtr->children)
@@ -88,7 +88,21 @@ std::vector<unsigned long long int> traverseAndCollectSizes(const std::shared_pt
 		{
 			results.emplace_back(child->size);
 		}
-		results.append_range(traverseAndCollectSizes(child));
+		results.append_range(traverseAndCollectSizesPart1(child));
+	}
+	return results;
+}
+
+std::vector<unsigned long long int> traverseAndCollectSizesPart2(const std::shared_ptr<Dir>& dirPtr, const unsigned long long int size)
+{
+	std::vector<unsigned long long int> results;
+	for (const auto& child : dirPtr->children)
+	{
+		if(child->size >= size)
+		{
+			results.emplace_back(child->size);
+		}
+		results.append_range(traverseAndCollectSizesPart2(child, size));
 	}
 	return results;
 }
@@ -118,7 +132,7 @@ Command parseLsCommand(const std::vector<std::string>& lines)
 			try
 			{
 				const unsigned long long int fileSize = std::stoll(splittedLine.front());
-				std::cout << "file=" << splittedLine.back() << " size=" << splittedLine.front() << "\n";
+				// std::cout << "file=" << splittedLine.back() << " size=" << splittedLine.front() << "\n";
 				fileSizeSum += fileSize;
 			}
 			catch (std::invalid_argument const& ex)
@@ -185,7 +199,14 @@ int main()
 		filesystem.executeCommand(parsedCommand);
 	}
 
-	const auto results = traverseAndCollectSizes(filesystem.topDir);
+	auto results = traverseAndCollectSizesPart1(filesystem.topDir);
 	const auto sum = std::accumulate(results.begin(), results.end(), unsigned long long int{0});
 	std::cout << "Result is: " << sum << "\n";
+
+	// part 2
+	const auto freeSpace = 70000000 - filesystem.topDir->size;
+	const auto additionalSpaceRequiredToUpdate = 30000000 - freeSpace;
+	results = traverseAndCollectSizesPart2(filesystem.topDir, additionalSpaceRequiredToUpdate);
+	std::ranges::sort(results);
+	std::cout << "Total size of directory is: " << results.front() << "\n";
 }
