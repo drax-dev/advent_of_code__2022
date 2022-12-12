@@ -36,4 +36,18 @@ namespace Utils
 		}
 		return results;
 	}
+
+	std::pair<std::string, std::string> create_pair_from_line(const std::string& line, const char delimiter)
+	{
+		std::string first;
+		if (std::stringstream ss(line); std::getline(ss, first, delimiter))
+		{
+			first = trim(first);
+			std::string second;
+			std::getline(ss, second);
+			second = trim(second);
+			return std::make_pair(first, second);
+		}
+		return {};
+	}
 }
