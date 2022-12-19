@@ -288,9 +288,9 @@ void a_star_search(const std::vector<std::vector<Point>>& input_data, const Poin
 		}
 
 		for (auto neighbors = get_neighbors(current, input_data);
-			auto& next : neighbors)
+			auto & next : neighbors)
 		{
-			if (const int newCost = cost_so_far[current] + next.cost; 
+			if (const int newCost = cost_so_far[current] + next.cost;
 				!cost_so_far.contains(next) || newCost < cost_so_far[next])
 			{
 				cost_so_far[next] = newCost;
@@ -329,7 +329,7 @@ std::vector<std::vector<Point>> parse_input(const std::string& input_data)
 }
 
 
- Point findFirstOccurrence(const char nodeId, const std::vector<std::vector<Point>>& parsedInput)
+Point findFirstOccurrence(const char nodeId, const std::vector<std::vector<Point>>& parsedInput)
 {
 	const auto inputDataSizeX = parsedInput.size();
 	const auto inputDataSizeY = parsedInput.front().size();
@@ -346,6 +346,24 @@ std::vector<std::vector<Point>> parse_input(const std::string& input_data)
 	return {};
 }
 
+std::vector<Point> findAllOccurrences(const char nodeId, const std::vector<std::vector<Point>>& parsedInput)
+{
+	std::vector<Point> results;
+	const auto inputDataSizeX = parsedInput.size();
+	const auto inputDataSizeY = parsedInput.front().size();
+	for (std::size_t x = 0; x < inputDataSizeX; ++x)
+	{
+		for (std::size_t y = 0; y < inputDataSizeY; ++y)
+		{
+			if (nodeId == parsedInput[x][y].value)
+			{
+				results.emplace_back(parsedInput[x][y]);
+			}
+		}
+	}
+	return results;
+}
+
 int main()
 {
 	// part1 brute force
@@ -358,15 +376,41 @@ int main()
 
 	// part1 a star
 	const auto data = Utils::read_file("day12_input.txt");
-	auto parsedInput = parse_input(data);
-	std::unordered_map<Point, Point> came_from;
-	std::unordered_map<Point, int> cost_so_far;
-	const auto startPoint = findFirstOccurrence('S', parsedInput);
-	parsedInput[startPoint.x][startPoint.y].cost = 0; //First point has no cost ! 
-	parsedInput[startPoint.x][startPoint.y].value = 'a';
-	const auto endPoint = findFirstOccurrence('E', parsedInput);
-	parsedInput[endPoint.x][endPoint.y].value = 'z';
+	//auto parsedInput = parse_input(data);
+	//std::unordered_map<Point, Point> came_from;
+	//std::unordered_map<Point, int> cost_so_far;
+	//const auto startPoint = findFirstOccurrence('S', parsedInput);
+	//parsedInput[startPoint.x][startPoint.y].cost = 0; //First point has no cost ! 
+	//parsedInput[startPoint.x][startPoint.y].value = 'a';
+	//const auto endPoint = findFirstOccurrence('E', parsedInput);
+	//parsedInput[endPoint.x][endPoint.y].value = 'z';
 
-	a_star_search(parsedInput, parsedInput[startPoint.x][startPoint.y], parsedInput[endPoint.x][endPoint.y], came_from, cost_so_far);
-	std::cout << cost_so_far[parsedInput[endPoint.x][endPoint.y]] << std::endl;
+	//a_star_search(parsedInput, parsedInput[startPoint.x][startPoint.y], parsedInput[endPoint.x][endPoint.y], came_from, cost_so_far);
+	//std::cout << "Final result part1 is: " << cost_so_far[parsedInput[endPoint.x][endPoint.y]] << std::endl;
+
+	// part2
+	const auto parsedInputPart2 = parse_input(data);
+	const auto startPointPart2 = findFirstOccurrence('S', parsedInputPart2);
+	const auto endPointPart2 = findFirstOccurrence('E', parsedInputPart2);
+	auto startPoints = findAllOccurrences('a', parsedInputPart2);
+	startPoints.emplace_back(startPointPart2);
+
+	std::vector<int> results;
+	for (const auto& point : startPoints)
+	{
+		std::vector<std::vector<Point>> tempParsedInput;
+		std::ranges::copy(parsedInputPart2.begin(), parsedInputPart2.end(),
+		                  std::back_inserter(tempParsedInput));
+		tempParsedInput[endPointPart2.x][endPointPart2.y].value = 'z';
+		std::unordered_map<Point, Point> came_from_part2;
+		std::unordered_map<Point, int> cost_so_far_part2;
+		tempParsedInput[point.x][point.y].cost = 0; //First point has no cost ! 
+		tempParsedInput[point.x][point.y].value = 'a';
+		a_star_search(tempParsedInput, tempParsedInput[point.x][point.y], tempParsedInput[endPointPart2.x][endPointPart2.y], came_from_part2, cost_so_far_part2);
+		results.emplace_back(cost_so_far_part2[tempParsedInput[endPointPart2.x][endPointPart2.y]]);
+		std::cout << results.back() << std::endl;
+	}
+	std::ranges::sort(results, std::ranges::less());
+	std::erase_if(results,[](const int v){return v == 0;});
+	std::cout << "Final result part2 is: " << results.front() << '\n';
 }
