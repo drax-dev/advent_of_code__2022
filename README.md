@@ -10,7 +10,7 @@
 - day_09:     part 1 :white_check_mark:        | part 2 :white_check_mark:
 - day_10:     part 1 :white_check_mark:        | part 2 :white_check_mark: 
 - day_11:     part 1 :white_check_mark:        | part 2 :white_check_mark: 
-- day_12:     part 1 :black_square_button:     | part 2 :black_square_button: 
+- day_12:     part 1 :white_check_mark:        | part 2 :white_check_mark: 
 - day_13:     part 1 :black_square_button:     | part 2 :black_square_button: 
 - day_14:     part 1 :black_square_button:     | part 2 :black_square_button: 
 - day_15:     part 1 :black_square_button:     | part 2 :black_square_button: 
