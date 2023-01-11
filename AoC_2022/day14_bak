@@ -1,0 +1,124 @@
+//#include <iostream>
+#include <fstream>
+#include <filesystem>
+#include <iostream>
+
+
+std::string trim(std::string string_input)
+{
+	constexpr auto whitespaces = " \t\n\r\f\v";
+	string_input.erase(string_input.find_last_not_of(whitespaces) + 1);
+	string_input.erase(0, string_input.find_first_not_of(whitespaces));
+	return string_input;
+}
+
+std::string read_file(const std::filesystem::path& path)
+{
+	std::string result{};
+	if (std::ifstream f{ path, std::ios::in | std::ios::binary })
+	{
+		const auto size = std::filesystem::file_size(path);
+		result = std::string(size, '\0');
+		f.read(result.data(), static_cast<long long>(size));
+	}
+	return result;
+}
+
+std::vector<std::string> split_string(const std::string& input_string, const char delimiter)
+{
+	std::vector<std::string> results;
+	std::string temp_string;
+	std::stringstream ss(input_string);
+	while (std::getline(ss, temp_string, delimiter))
+	{
+		temp_string = trim(temp_string);
+		results.emplace_back(temp_string);
+	}
+	return results;
+}
+
+std::pair<std::string, std::string> create_pair_from_line(const std::string& line, const char delimiter)
+{
+	std::string first;
+	if (std::stringstream ss(line); std::getline(ss, first, delimiter))
+	{
+		first = trim(first);
+		std::string second;
+		std::getline(ss, second);
+		second = trim(second);
+		return std::make_pair(first, second);
+	}
+	return {};
+}
+
+struct Position
+{
+	int x;
+	int y;
+};
+
+std::vector<std::string> parseRocks(const std::vector<std::string>& lines)
+{
+	std::vector<std::string> rocks;
+	for (const auto& line : lines)
+	{
+		std::string tempString;
+		std::stringstream ss(line);
+		if (std::getline(ss, tempString, '-'))
+		{
+			tempString = trim(tempString);
+			rocks.emplace_back(tempString);
+		}
+		while (std::getline(ss, tempString, '-'))
+		{
+			tempString.erase(0, 1);
+			tempString = trim(tempString);
+			rocks.emplace_back(tempString);
+		}
+	}
+	return rocks;
+}
+
+void drawBoard(const std::vector<std::string>& lines)
+{
+	const auto rocksStrings = parseRocks(lines);
+	std::vector<Position> rocks;
+	for (const auto& rocksString : rocksStrings)
+	{
+		std::string first;
+		if (std::stringstream ss(rocksString); std::getline(ss, first, ','))
+		{
+			first = trim(first);
+			std::string second;
+			std::getline(ss, second);
+			second = trim(second);
+			try
+			{
+				const auto firstNum = std::stoi(first);
+				const auto secondNum = std::stoi(second);
+				rocks.emplace_back(Position{ firstNum, secondNum });
+			}
+			catch (std::invalid_argument const& ex)
+			{
+				std::cout << "std::invalid_argument::what(): " << ex.what() << '\n';
+			}
+			catch (std::out_of_range const& ex)
+			{
+				std::cout << "std::out_of_range::what(): " << ex.what() << '\n';
+			}
+		}
+	}
+}
+
+int main()
+{
+	// part 1
+	const auto data = read_file("day14_simple.txt");
+	const auto lines = split_string(data, '\n');
+	drawBoard(lines);
+	//std::cout << "Result is " << result << "\n";
+
+	// part 2
+	std::cout << '\n';
+
+}
